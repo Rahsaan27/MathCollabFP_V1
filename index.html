@@ -6,63 +6,79 @@
 </head>
 <body>
 
-    <div>Teachable Machine Image Model</div>
-    
-    <!-- File upload input instead of webcam -->
-    <input type="file" accept="image/*" onchange="handleUpload(event)">
+    <h1>My AI Image Classifier</h1>
+
+    <!-- Step 1: Pick an image -->
+    <input type="file" accept="image/*" id="fileInput">
     <br><br>
-    
-    <!-- Preview the uploaded image -->
-    <img id="preview" src="" width="200" height="200" style="display:none;">
+
+    <!-- Step 2: Submit button -->
+    <button onclick="runPrediction()">Analyze Image</button>
+    <br><br>
+
+    <!-- Image preview -->
+    <img id="preview" src="" width="200" height="200" style="display:none; margin-bottom:10px;">
     <br>
-    
-    <!-- Results show up here -->
+
+    <!-- Results -->
+    <h2 id="result-title" style="display:none;">Results:</h2>
     <div id="label-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
 
-        const URL = "https://teachablemachine.withgoogle.com/models/DY7pFRNqM/";
+        const MODEL_URL = "https://teachablemachine.withgoogle.com/models/DY7pFRNqM/";
         let model, maxPredictions;
 
-        // Load the model once when the page loads
+        // Load model silently when page opens
         async function loadModel() {
-            model = await tmImage.load(URL + "model.json", URL + "metadata.json");
+            model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
             maxPredictions = model.getTotalClasses();
-
-            // Set up the label container
-            labelContainer = document.getElementById("label-container");
-            for (let i = 0; i < maxPredictions; i++) {
-                labelContainer.appendChild(document.createElement("div"));
-            }
-
             console.log("Model ready!");
         }
 
-        // Called when user picks a file
-        async function handleUpload(event) {
+        // Show preview when user picks a file
+        document.getElementById("fileInput").addEventListener("change", function(event) {
             const file = event.target.files[0];
             if (!file) return;
-
-            // Show a preview of the image
             const img = document.getElementById("preview");
             img.src = URL.createObjectURL(file);
             img.style.display = "block";
+        });
 
-            // Wait for the image to fully load before predicting
-            img.onload = async function() {
-                const prediction = await model.predict(img);
-                for (let i = 0; i < maxPredictions; i++) {
-                    const classPrediction =
-                        prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-                    labelContainer.childNodes[i].innerHTML = classPrediction;
-                }
+        // Run prediction when user clicks Analyze
+        async function runPrediction() {
+            const img = document.getElementById("preview");
+
+            // Guard: make sure an image is actually loaded
+            if (!img.src || img.style.display === "none") {
+                alert("Please select an image first!");
+                return;
+            }
+
+            const prediction = await model.predict(img);
+
+            // Sort by confidence, highest first
+            prediction.sort((a, b) => b.probability - a.probability);
+
+            // Show results
+            document.getElementById("result-title").style.display = "block";
+            const labelContainer = document.getElementById("label-container");
+            labelContainer.innerHTML = ""; // clear old results
+
+            for (let i = 0; i < prediction.length; i++) {
+                const div = document.createElement("div");
+                const pct = (prediction[i].probability * 100).toFixed(1);
+                div.innerHTML = `<strong>${prediction[i].className}</strong>: ${pct}%`;
+                div.style.fontSize = "18px";
+                div.style.marginBottom = "6px";
+                // Highlight the top result in green
+                if (i === 0) div.style.color = "green";
+                labelContainer.appendChild(div);
             }
         }
-        //testing
 
-        // Load model immediately when page opens
         loadModel();
 
     </script>
