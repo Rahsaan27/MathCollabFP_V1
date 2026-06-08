@@ -1,90 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="style.css">
 <head>
     <meta charset="UTF-8">
     <title>My AI Model</title>
 </head>
 <body>
+    
+    <div class="container">
+        <h1>My AI Image Classifier</h1>
 
-    <h1>My AI Image Classifier</h1>
+        <!-- Step 1: Pick an image -->
+        <input type="file" accept="image/*" id="fileInput" onchange="showPreview()">
+        <br><br>
 
-    <!-- Step 1: Pick an image -->
-    <input type="file" accept="image/*" id="fileInput" onchange="showPreview()">
-    <br><br>
+        <!-- Step 2: Click to analyze -->
+        <button onclick="runPrediction()">Analyze Image</button>
+        <br><br>
 
-    <!-- Step 2: Click to analyze -->
-    <button onclick="runPrediction()">Analyze Image</button>
-    <br><br>
+        <!-- Image preview -->
+        <img id="preview" src="" width="200" height="200" style="display:none;">
+        <br><br>
 
-    <!-- Image preview -->
-    <img id="preview" src="" width="200" height="200" style="display:none;">
-    <br><br>
+        <!-- Results -->
+        <div id="label-container"></div>
+    </div>
 
-    <!-- Results -->
-    <div id="label-container"></div>
-
+    
     <!-- These two lines load the AI library — students don't need to touch these -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-
+    <script src = 'script.js'></script>
     <script type="text/javascript">
-
-        // ✏️ CHANGE THIS to your own model URL
-        var MODEL_URL = "https://teachablemachine.withgoogle.com/models/DY7pFRNqM/";
-
-        // This variable will hold our AI model once it loads
-        var model;
-
-        // This runs automatically when the page loads
-        // Students don't need to understand async — just tell them
-        // "this loads the AI brain, it takes a second"
-        async function loadModel() {
-            model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
-            console.log("Model ready!");
-        }
-
-        // When the user picks a file, show a preview
-        function showPreview() {
-            var fileInput = document.getElementById("fileInput");
-            var file = fileInput.files[0];
-
-            var img = document.getElementById("preview");
-            img.src = URL.createObjectURL(file);
-            img.style.display = "block";
-        }
-
-        // When the user clicks Analyze, run the prediction
-        async function runPrediction() {
-
-            // Get the image the user uploaded
-            var img = document.getElementById("preview");
-
-            // Make sure they actually picked an image first
-            if (img.style.display === "none") {
-                alert("Please pick an image first!");
-                return;
-            }
-
-            // Ask the AI model to look at the image
-            var results = await model.predict(img);
-
-            // Build the output text
-            var output = "";
-
-            for (var i = 0; i < results.length; i++) {
-                var name = results[i].className;
-                var confidence = (results[i].probability * 100).toFixed(1);
-                output = output + name + ": " + confidence + "%" + "<br>";
-            }
-
-            // Show the results on the page
-            document.getElementById("label-container").innerHTML = output;
-        }
-
-        // Load the model when the page opens
-        loadModel();
-
-    </script>
 
 </body>
 </html>
