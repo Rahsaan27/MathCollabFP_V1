@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="style.css">
-<head>
-    <meta charset="UTF-8">
-    <title>My AI Model</title>
-</head>
-<body>
+    <link rel="stylesheet" href="style.css">
+    <head>
+        <meta charset="UTF-8">
+        <title>My AI Model</title>
+    </head>
+    <body>
     
-    <div class="container">
-        <h1>My AI Image Classifier</h1>
+        <div class="container">
+            <h1>My AI Image Classifier</h1>
 
-        <!-- Step 1: Pick an image -->
-        <input type="file" accept="image/*" id="fileInput" onchange="showPreview()">
-        <br><br>
+            <!-- Step 1: Pick an image -->
+            <input type="file" accept="image/*" id="fileInput" onchange="showPreview()">
+            <br><br>
 
-        <!-- Step 2: Click to analyze -->
-        <button onclick="runPrediction()">Analyze Image</button>
-        <br><br>
+            <!-- Step 2: Click to analyze -->
+            <button onclick="runPrediction()">Analyze Image</button>
+            <br><br>
 
-        <!-- Image preview -->
-        <img id="preview" src="" width="200" height="200" style="display:none;">
-        <br><br>
+            <!-- Image preview -->
+            <img id="preview" src="" width="200" height="200" style="display:none;">
+            <br><br>
 
-        <!-- Results -->
-        <div id="label-container"></div>
-    </div>
+            <!-- Results -->
+            <div id="label-container"></div>
+        </div>
 
-    
-    <!-- These two lines load the AI library — students don't need to touch these -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <script src = 'script.js'></script>
-    <script type="text/javascript">
+        
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+        <script src = 'script.js'></script>
+        <script type="text/javascript"></script>
 
-</body>
+    </body>
 </html>
